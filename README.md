@@ -20,6 +20,8 @@ kayıt olan herkese Telegram üzerinden anlık bildirim gönderen açık kaynakl
 
 YKS sonuçlarının açıklanma anını sürekli F5 yaparak beklemek yerine, Telegram üzerinden `/start` diyerek bota kayıt olun — sonuçlar açıklandığında anında haberiniz olsun.
 
+Kendi botunu oluşturmak istiyorsan [buraya](https://github.com/Metee01/YKS-Result-Checker) tıklayabilirsin.
+
 ### Nasıl Çalışır?
 
 ```
