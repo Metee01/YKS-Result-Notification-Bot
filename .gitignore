@@ -1,0 +1,23 @@
+# Ortam değişkenleri
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Cache
+.result_found
+
+# Kullanıcı verileri (güvenlik — public repoda saklanmamalı)
+users.json
+last_update_id.txt

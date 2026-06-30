@@ -1,0 +1,65 @@
+name: YKS Sonuç Kontrol
+
+on:
+  # Her 5 dakikada bir otomatik çalış
+  schedule:
+    - cron: '*/5 * * * *'
+
+  # Manuel tetikleme (test için)
+  workflow_dispatch:
+
+# Aynı anda birden fazla çalışmayı engelle
+concurrency:
+  group: yks-checker
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    # Workflow devre dışı bırakma için gerekli izin
+    permissions:
+      actions: write
+
+    steps:
+      # 1. Kodu çek
+      - name: 📥 Checkout
+        uses: actions/checkout@v5
+
+      # 2. Python kur
+      - name: 🐍 Python Kurulumu
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # 3. Bağımlılıkları kur (cache ile hızlandır)
+      - name: 📦 Bağımlılık Kurulumu
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4. Önceki cache'i yükle (sonuç daha önce bulunmuş mu?)
+      - name: 📂 Cache Yükle
+        uses: actions/cache@v5
+        with:
+          path: .result_found
+          key: yks-result-found
+
+      # 5. Kullanıcı verilerini cache'den yükle
+      - name: 👥 Kullanıcı Verilerini Yükle
+        uses: actions/cache@v5
+        with:
+          path: |
+            users.json
+            last_update_id.txt
+          key: user-data-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            user-data-
+
+      # 6. Kontrol scriptini çalıştır
+      - name: 🔍 YKS Sonuç Kontrolü
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python main.py
